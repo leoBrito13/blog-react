@@ -1,12 +1,15 @@
-import { deletePostAction } from "@/actions/post/delete-post-action";
 import { findAllPostsAdmin } from "@/lib/post/queries/admin";
-import { Trash2Icon } from "lucide-react";
 import Link from "next/link";
 import { DeletePostButton } from "../Admin/DeletePostButton";
+import { Dialog } from "../Dialog";
+import ErrorMessage from "../ErrorMessage";
 
 export const dynamic = "force-dynamic";
 export default async function PostsListAdmin() {
   const posts = await findAllPostsAdmin();
+  if (posts.length <= 0)
+    return <ErrorMessage title={"Ei"} message={"Não há nenhum post criado"} />;
+
   return (
     <div className="mb-16">
       {posts.map((post) => {

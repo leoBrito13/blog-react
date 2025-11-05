@@ -1,8 +1,11 @@
 "use client";
 
 import { deletePostAction } from "@/actions/post/delete-post-action";
+import { Dialog } from "@/components/Dialog";
+import { error } from "console";
 import { Trash2Icon } from "lucide-react";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
+import { toast } from "react-toastify";
 
 type DeletePostButtonProps = {
   id: string;
@@ -11,22 +14,46 @@ type DeletePostButtonProps = {
 
 export function DeletePostButton({ id, title }: DeletePostButtonProps) {
   const [isPending, startTransition] = useTransition();
+  const [showDialog, setShowDialog] = useState(false);
+
   function handleClick() {
+    setShowDialog(true);
+  }
+
+  function handleConfirm() {
+    toast.dismiss();
     startTransition(async () => {
       const result = await deletePostAction(id);
-      alert("result:" + result);
+      setShowDialog(false);
+      if (result.error) {
+        toast.error(result.error);
+      }
+
+      toast.success("Post apagado com sucesso");
     });
   }
 
   return (
-    <button
-      className="text-red-500 cursor-pointer hover:scale-120 hover:text-red-700 transition disabled:text-slate-600 disabled:cursor-not-allowed"
-      aria-label={`Apagar o post : ${title}`}
-      title={`Apagar o post : ${title}`}
-      onClick={handleClick}
-      disabled={isPending}
-    >
-      <Trash2Icon size={18} />
-    </button>
+    <>
+      <button
+        className="text-red-500 cursor-pointer hover:scale-120 hover:text-red-700 transition disabled:text-slate-600 disabled:cursor-not-allowed"
+        aria-label={`Apagar o post : ${title}`}
+        title={`Apagar o post : ${title}`}
+        onClick={handleClick}
+        disabled={isPending}
+      >
+        <Trash2Icon size={18} />
+      </button>
+      {showDialog && (
+        <Dialog
+          isVisible={showDialog}
+          title="Apagar Post?"
+          content={`Tem certeza que deseja apagar o post ${title} ?`}
+          onCancel={() => setShowDialog(false)}
+          onConfirm={handleConfirm}
+          disabled={isPending}
+        />
+      )}
+    </>
   );
 }
