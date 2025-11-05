@@ -4,6 +4,7 @@ import "./globals.css";
 import { Container } from "@/components/Container";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { ToastifyContainer } from "@/components/Toastifycontainer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
 
           <Footer />
         </Container>
+        <ToastifyContainer />
       </body>
     </html>
   );
